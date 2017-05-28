@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: LITIengine Newproject
+Bundle-SymbolicName: de.gurkenlabs.litiengine.newproject;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: de.gurkenlabs.litiengine.newproject.Activator
+Bundle-Vendor: gurkenlabs.de
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.jdt;bundle-version="3.12.3",
+ org.eclipse.jdt.core;bundle-version="3.12.3",
+ org.eclipse.jdt.launching;bundle-version="3.8.101"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
