@@ -1,5 +1,7 @@
 package de.gurkenlabs.litiengine.newproject.wizards;
 
+import java.util.List;
+
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -18,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Combo;
 
 public class LITIengineNewGameWizardPage extends WizardPage {
   private Text projectText;
@@ -27,6 +30,9 @@ public class LITIengineNewGameWizardPage extends WizardPage {
 
   private ISelection selection;
   private Canvas canvas;
+  private Combo combo;
+  private Label lblBuilds;
+  public static List<EngineRelease> releases;
 
   /**
    * Constructor for SampleNewWizardPage.
@@ -45,6 +51,19 @@ public class LITIengineNewGameWizardPage extends WizardPage {
    */
   public void createControl(Composite parent) {
     Composite container = new Composite(parent, SWT.NULL);
+    container.addPaintListener(new PaintListener() {
+      public void paintControl(PaintEvent arg0) {
+        if (releases == null) {
+          releases = ReleaseBuildManager.getLitiEngineReleases();
+        }
+
+        combo.removeAll();
+        for (EngineRelease release : releases) {
+          combo.add(release.getName());
+        }
+
+      }
+    });
     GridLayout layout = new GridLayout();
     container.setLayout(layout);
     layout.numColumns = 3;
@@ -118,11 +137,14 @@ public class LITIengineNewGameWizardPage extends WizardPage {
     initialize();
     dialogChanged();
     setControl(container);
-  }
+    new Label(container, SWT.NONE);
 
-  /**
-   * Tests if the current workbench selection is a suitable container to use.
-   */
+    lblBuilds = new Label(container, SWT.NONE);
+    lblBuilds.setText("Builds:");
+
+    combo = new Combo(container, SWT.NONE);
+    combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+  }
 
   private void initialize() {
     if (selection != null && selection.isEmpty() == false
