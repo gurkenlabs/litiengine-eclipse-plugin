@@ -21,18 +21,20 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
 
 public class LITIengineNewGameWizardPage extends WizardPage {
-  private Text projectText;
-  private Text packageText;
-  private Text gameClassText;
-  private Text locationText;
 
   private ISelection selection;
-  private Canvas canvas;
-  private Combo combo;
-  private Label lblBuilds;
   public static List<EngineRelease> releases;
+  private Text text_4;
+  private Text text_5;
+  private Text txtLocation;
+  private Text txtGameClass;
+  private Text txtBasePackage;
+  private Text txtProjectName;
+  private Combo combo;
 
   /**
    * Constructor for SampleNewWizardPage.
@@ -53,6 +55,10 @@ public class LITIengineNewGameWizardPage extends WizardPage {
     Composite container = new Composite(parent, SWT.NULL);
     container.addPaintListener(new PaintListener() {
       public void paintControl(PaintEvent arg0) {
+        if (combo == null) {
+          return;
+        }
+
         if (releases == null) {
           releases = ReleaseBuildManager.getLitiEngineReleases();
         }
@@ -64,86 +70,92 @@ public class LITIengineNewGameWizardPage extends WizardPage {
 
       }
     });
-    GridLayout layout = new GridLayout();
-    container.setLayout(layout);
-    layout.numColumns = 3;
-    layout.verticalSpacing = 9;
-    new Label(container, SWT.NONE);
-    new Label(container, SWT.NONE);
-
-    canvas = new Canvas(container, SWT.NONE);
-    GridData gd_canvas = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
-    gd_canvas.heightHint = 86;
-    gd_canvas.widthHint = 299;
-    canvas.setLayoutData(gd_canvas);
-    canvas.addPaintListener(new PaintListener() {
-      public void paintControl(PaintEvent arg0) {
-        Image ideaImage = new Image(canvas.getDisplay(), getClass().getResourceAsStream("/icons/litiengine-logo.png"));
-        arg0.gc.drawImage(ideaImage, 0, 0);
-      }
-    });
-    Label label = new Label(container, SWT.NONE);
-
-    label = new Label(container, SWT.NULL);
-    label.setText("&Project name:");
-
-    projectText = new Text(container, SWT.BORDER | SWT.SINGLE);
-    projectText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    projectText.setText("litiengine-game");
-    projectText.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
-        dialogChanged();
-      }
-    });
-    Label labelPackage = new Label(container, SWT.NULL);
-    labelPackage = new Label(container, SWT.NULL);
-    labelPackage.setText("&Base package:");
-
-    packageText = new Text(container, SWT.BORDER | SWT.SINGLE);
-    packageText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    packageText.setText("de.gurkenlabs.litienginegame");
-    packageText.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
-        dialogChanged();
-      }
-    });
-
-    Label lableGameClass = new Label(container, SWT.NULL);
-    lableGameClass = new Label(container, SWT.NULL);
-    lableGameClass.setText("&Game Class:");
-
-    gameClassText = new Text(container, SWT.BORDER | SWT.SINGLE);
-    gameClassText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    gameClassText.setText("LITIgame");
-    gameClassText.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
-        dialogChanged();
-      }
-    });
-
-    Label lableLocation = new Label(container, SWT.NULL);
-    lableLocation = new Label(container, SWT.NULL);
-    lableLocation.setText("&Location:");
-
-    locationText = new Text(container, SWT.BORDER | SWT.SINGLE);
-    locationText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    locationText.setText(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString());
-    locationText.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
-        dialogChanged();
-      }
-    });
 
     initialize();
     dialogChanged();
     setControl(container);
-    new Label(container, SWT.NONE);
+    container.setLayout(new GridLayout(1, false));
 
-    lblBuilds = new Label(container, SWT.NONE);
-    lblBuilds.setText("Builds:");
+    Composite composite = new Composite(container, SWT.NONE);
 
-    combo = new Combo(container, SWT.NONE);
+    Canvas canvas = new Canvas(composite, SWT.NONE);
+    canvas.setBounds(0, 0, 299, 86);
+
+    Group group = new Group(container, SWT.NONE);
+    GridData gd_group = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+    gd_group.widthHint = 580;
+    group.setLayoutData(gd_group);
+    group.setText("Engine");
+    group.setLayout(new GridLayout(3, false));
+
+    Button btnRadioButton = new Button(group, SWT.RADIO);
+    btnRadioButton.setText("Select Project from workspace");
+
+    text_5 = new Text(group, SWT.BORDER);
+    text_5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+    Button btnNewButton = new Button(group, SWT.NONE);
+    btnNewButton.setText("...");
+
+    Button btnSelectLibraryFrom = new Button(group, SWT.RADIO);
+    btnSelectLibraryFrom.setText("Select library from local machine");
+
+    text_4 = new Text(group, SWT.BORDER);
+    text_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+    Button btnNewButton_1 = new Button(group, SWT.NONE);
+    btnNewButton_1.setText("...");
+
+    Button btnDownloadAvailableRelease = new Button(group, SWT.RADIO);
+    btnDownloadAvailableRelease.setText("Download available release");
+
+    combo = new Combo(group, SWT.NONE);
     combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    new Label(group, SWT.NONE);
+
+    Group grpGameProject = new Group(container, SWT.NONE);
+    GridData gd_grpGameProject = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+    gd_grpGameProject.widthHint = 580;
+    grpGameProject.setLayoutData(gd_grpGameProject);
+    grpGameProject.setText("Game Project");
+    grpGameProject.setLayout(new GridLayout(3, false));
+
+    Label label_1 = new Label(grpGameProject, SWT.NONE);
+    GridData gd_label_1 = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+    gd_label_1.widthHint = 195;
+    label_1.setLayoutData(gd_label_1);
+    label_1.setText("&Project name:");
+
+    txtProjectName = new Text(grpGameProject, SWT.BORDER);
+    txtProjectName.setText("litiengine-game");
+    txtProjectName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    new Label(grpGameProject, SWT.NONE);
+
+    Label label_3 = new Label(grpGameProject, SWT.NONE);
+    label_3.setText("&Base package:");
+
+    txtBasePackage = new Text(grpGameProject, SWT.BORDER);
+    txtBasePackage.setText("de.gurkenlabs.litienginegame");
+    txtBasePackage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    new Label(grpGameProject, SWT.NONE);
+
+    Label label_5 = new Label(grpGameProject, SWT.NONE);
+    label_5.setText("&Game Class:");
+
+    txtGameClass = new Text(grpGameProject, SWT.BORDER);
+    txtGameClass.setText("LITIgame");
+    txtGameClass.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    new Label(grpGameProject, SWT.NONE);
+
+    Label label_7 = new Label(grpGameProject, SWT.NONE);
+    label_7.setText("&Location:");
+
+    txtLocation = new Text(grpGameProject, SWT.BORDER);
+    txtLocation.setText("F:/workspaces/gurkenlabs");
+    txtLocation.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+    Button btnNewButton_2 = new Button(grpGameProject, SWT.NONE);
+    btnNewButton_2.setText("...");
   }
 
   private void initialize() {
@@ -162,11 +174,11 @@ public class LITIengineNewGameWizardPage extends WizardPage {
   private void dialogChanged() {
     String projectName = getProjectName();
 
-    if (projectName.length() == 0) {
+    if (projectName == null || projectName.length() == 0) {
       updateStatus("Project name must be specified");
       return;
     }
-    if (projectName.replace('\\', '/').indexOf('/', 1) > 0) {
+    if (projectName != null && projectName.replace('\\', '/').indexOf('/', 1) > 0) {
       updateStatus("Project name must be valid");
       return;
     }
@@ -179,18 +191,18 @@ public class LITIengineNewGameWizardPage extends WizardPage {
   }
 
   public String getProjectName() {
-    return projectText.getText();
+    return this.txtProjectName != null ? this.txtProjectName.getText() : null;
   }
 
   public String getBasePackage() {
-    return packageText.getText();
+    return this.txtBasePackage != null ? this.txtBasePackage.getText() : null;
   }
 
   public String getGameClassName() {
-    return gameClassText.getText();
+    return this.txtGameClass != null ? this.txtGameClass.getText() : null;
   }
 
   public String getLocation() {
-    return locationText.getText();
+    return this.txtLocation != null ? this.txtLocation.getText() : null;
   }
 }
